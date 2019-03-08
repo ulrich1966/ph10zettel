@@ -11,6 +11,8 @@ public class CreateTest {
 		CreateTestData td = new CreateTestData();
 		td.createGroups();
 		td.createGameModus();
-		td.createSessionsGames();
+		for (int i = 0; i < 3; i++) {
+			td.createSessionsGames();			
+		}
 	}
 }

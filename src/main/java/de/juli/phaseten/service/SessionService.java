@@ -26,19 +26,20 @@ public class SessionService {
 	public PlaySession newGame(PlaySession session, GameModus modus) {
 		List<Player> players = session.getPlayerGroup().getPlayers();
 		List<Sheed> sheeds = new ArrayList<Sheed>();
-		players.forEach(m -> createSeeds(m, modus, sheeds));
+		Game game = (Game) controller.create(new Game((Player) CreateTestData.randomWinner(players), session));
+		players.forEach(m -> createSeeds(m, modus, sheeds, game));
 		assert (players.size() == sheeds.size());
-		Game game = (Game) controller.create(new Game((Player) CreateTestData.randomWinner(players), session,  sheeds));
-		game = (Game) controller.create(game);
-		if(game != null) {
+		controller.create(game);
+		if(game.getId() != null) {
 			session.addGame(game);			
 			return session;
 		}
 		return null;
 	}
 
-	private void createSeeds(Player m, GameModus modus, List<Sheed> sheeds) {
-		Sheed sheed = new Sheed(m);
+	private void createSeeds(Player player, GameModus modus, List<Sheed> sheeds, Game game) {
+		Sheed sheed = new Sheed(player, game);
+		
 		for (PhaseItem item : modus.getPhaseItems()) {
 			switch (item.getNumber()) {
 			case 1:
@@ -76,7 +77,6 @@ public class SessionService {
 				break;
 			}
 		}
-		sheed.setPlayer(m);
 		sheed = (Sheed) controller.create(sheed);
 		sheeds.add(sheed);
 	}

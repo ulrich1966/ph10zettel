@@ -57,7 +57,7 @@ public class ServiceTest {
 	public void playerTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		PlayerService service = new PlayerService();
-		Response count = service.getVAlueById("bal", ""+id);
+		Response count = service.getValueById("bal", ""+id);
 		String jsonString = count.getEntity().toString();
 		System.out.println(jsonString);
 		System.out.println("DONE\n");

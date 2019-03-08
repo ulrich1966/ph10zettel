@@ -17,23 +17,42 @@ abstract class RestService<T extends Model> {
 	protected Controller<T> conrtroller = new Controller<T>();
 	protected ObjectMapper mapper = new ObjectMapper();
 	
+	public void hasPermission(String hash) throws NoPermissionExeption {
+		if(!checkPermission(hash)) {
+			throw new NoPermissionExeption(String.format("no permission for key: %s", hash));
+		}			
+	}
+	
+	protected T findModel(String id, Class<T> clazz) throws IllegalArgumentException {
+		T model = conrtroller.findById(stringToNumber(id), clazz);
+		if(model == null) {
+			throw new IllegalArgumentException("no Entity found"); 
+		}
+		return model; 
+	}
+	
+	protected List<T> findModels(Class<T> clazz) throws IllegalArgumentException {
+		List<T> models = conrtroller.findAll(clazz);
+		if(models == null || models.isEmpty()) {
+			throw new IllegalArgumentException("no Entity found"); 
+		}
+		return models; 
+	}
+	
 	protected Response getValues(String hash, Class<T> clazz) {
 		String jsonResponse = "";
 		try {
-			if(!checkPermission(hash)) {
-				throw new NoPermissionExeption();
-			}
-			List<T> all = conrtroller.findAll(clazz);
-			jsonResponse = mapper.writeValueAsString(all);
+			checkPermission(hash);
+			jsonResponse = mapper.writeValueAsString(findModels(clazz));
 		} catch (NoPermissionExeption e) {
 			e.printStackTrace();
 			return noPermissionResult();			
 		} catch (IllegalArgumentException  e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.NO_CONTENT).entity(String.format("No entry for [%s]", clazz.getName())). build();			
+			return Response.status(Response.Status.NO_CONTENT).entity(String.format("No entry for [%s]", clazz.getName())).build();			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()). build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		return createResponse(jsonResponse);
 	}
@@ -41,18 +60,15 @@ abstract class RestService<T extends Model> {
 	protected Response getValueById(String hash, String id, Class<T> clazz) {
 		String jsonResponse = "";
 		try {
-			if(!checkPermission(hash)) {
-				throw new NoPermissionExeption();
-			}
-			T model = conrtroller.findById(stringToNumber(id), clazz);
-			jsonResponse = mapper.writeValueAsString(model);
+			checkPermission(hash);
+			jsonResponse = mapper.writeValueAsString(findModel(id, clazz));
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();	
 		} catch (IllegalArgumentException  e) {
-			return Response.status(Response.Status.NO_CONTENT).entity(String.format("No entry for [%s] with id [%s]", clazz.getName(), id)). build();			
+			return Response.status(Response.Status.NO_CONTENT).entity(String.format("No entry for [%s] with id [%s]", clazz.getName(), id)).build();			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse). build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
 		}
 		return createResponse(jsonResponse);
 	}
@@ -60,9 +76,7 @@ abstract class RestService<T extends Model> {
 	protected Response getCount(String hash, Class<T> clazz) {
 		String jsonResponse = "";
 		try {
-			if(!checkPermission(hash)) {
-				throw new NoPermissionExeption();
-			}
+			checkPermission(hash);
 			List<T> list = conrtroller.findAll(clazz);
 			jsonResponse = ""+list.size();
 		} catch (NoPermissionExeption e) {
@@ -111,4 +125,5 @@ abstract class RestService<T extends Model> {
 				.header("X-Webkit-CSP", "default-src 'self'")
 				.build();
 	}
+
 }

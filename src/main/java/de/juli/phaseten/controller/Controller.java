@@ -57,8 +57,8 @@ public class Controller<T extends Model> {
 		return em.createNamedQuery(querry, Model.class).setParameter("number", number).getSingleResult();
 	}
 
-	public Model findByPlaySession(PlaySession session) {
-		return em.createNamedQuery("Game.findByPlaySession", Game.class).setParameter("session", session).getSingleResult();
+	public List<Game> findByPlaySession(PlaySession session) {
+		return em.createNamedQuery("Game.findByPlaySession", Game.class).setParameter("session", session).getResultList();
 	}
 
 	public boolean delete(Model model) {

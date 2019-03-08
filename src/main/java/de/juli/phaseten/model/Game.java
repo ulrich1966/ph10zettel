@@ -11,6 +11,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @NamedQueries({
 	  @NamedQuery(name="Game.findAll", query="SELECT model FROM Game model"),
@@ -18,6 +20,7 @@ import javax.persistence.OneToOne;
 	  @NamedQuery(name="Game.findByWinner", query="SELECT model FROM Game model WHERE model.winner = :winner"),
 	  @NamedQuery(name="Game.findByPlaySession", query="SELECT model FROM Game model WHERE model.playSession = :session")
 	})
+@JsonIgnoreProperties({ "playSession", "sheeds" })
 public class Game extends Model {
 	private Integer currentNumber;
 	@OneToOne
@@ -31,11 +34,10 @@ public class Game extends Model {
 		super();
 	}
 
-	public Game(Player winner, PlaySession playSession, List<Sheed> sheeds) {
+	public Game(Player winner, PlaySession playSession) {
 		super();
 		this.winner = winner;
 		this.playSession = playSession;
-		this.sheeds = sheeds;
 	}
 
 	public Integer getCurrentNumber() {

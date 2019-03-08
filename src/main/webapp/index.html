@@ -2,9 +2,40 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+	<title>Insert title here</title>
+	<style type="text/css">
+		div{
+			margin: 20px;
+			font-size: 1.2em;
+		}
+	</style>
 </head>
 <body>
 	Moin
+	<div>&nbsp;</div>
+	<div><h2>Spieler</h2></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/player/" target="_blur">.../api/player/ -> Alle Spieler</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/api/player/{id}" target="_blur">.../api/player/{id}/ Einen bestimmten Spieler </a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/player/playergroup/{id}" target="_blur">.../api/player/playergroup/{id} Alle Spieler einer Gruppe   </a></div>
+	<div>&nbsp;</div>
+	<div><h2>Spielergruppen</h2></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playergroup/" target="_blur">.../api/playergroup - > Alle Spielergruppen</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playergroup/{id}/" target="_blur">.../api/playergroup/{id} -> Eine Gruppe </a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playergroup/player/{id}" target="_blur">.../api/player/{id}/playergroup -> Die Gruppen eiens Spielers</a></div>
+	<div>&nbsp;</div>
+	<div><h2>Spielsession</h2></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playsession" target="_blur">.../api/playsession/ -> Alle Sessions</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playsession/{id}" target="_blur">.../api/playsession/{id} -> Session mit einer bestimmten ID</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playsession/playergroup/{id}" target="_blur">.../api/playsession/playergroup/{id} ->  Alle Spielsessions einer Gruppe </a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/playsession/player/{id}" target="_blur">.../api/playsession/player/{id} ->  Alle Spielsessions eines Spielers </a></div>
+	<div>&nbsp;</div>
+	<div><h2>Spielrunden</h2></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/game" target="_blur">.../api/game/ -> Alle Spiele</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/game/{id}" target="_blur">.../api/game/{id} -> Spiele einer bestimmten ID</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/game/playsession/{id}" target="_blur">.../api/game/playsession/{id} -> Spiele einer Spielsession</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/game/playergroup/{id}" target="_blur">.../api/game/playergroup/{id}-> Spiele eines Spielers</a></div>
+	<div><a href="http://localhost:8080/ph10zettel/api/game/player/{id}" target="_blur">.../api/game/player/{id}-> Spiele eines Spielers</a></div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
 </body>
 </html>

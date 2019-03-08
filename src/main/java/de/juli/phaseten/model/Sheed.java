@@ -31,15 +31,22 @@ public class Sheed extends Model {
  	private Player player;
  	@ManyToOne(cascade = CascadeType.ALL)
  	private Game game;
-	
+ 	
+ 	
  	public Sheed() {
-		super();
+ 		super();
+ 	}
+	
+ 	public Sheed(Player player) {
+ 		this();
+ 		this.player = player;
+ 	}
+
+ 	public Sheed(Player player, Game game) {
+		this(player);
+		this.game = game;
 	}
 
-	public Sheed(Player player) {
-		super();
-		this.player = player;
-	}
 
 	public Phase getPhase01() {
 		return phase01;
