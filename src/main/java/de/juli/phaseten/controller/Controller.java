@@ -7,10 +7,8 @@ import javax.persistence.EntityManager;
 import de.juli.phaseten.model.Game;
 import de.juli.phaseten.model.Model;
 import de.juli.phaseten.model.PlaySession;
-import de.juli.phaseten.model.Player;
 
 public class Controller<T extends Model> {
-
 	EntityManager em = MyEntittyManager.getInstance().getEm();
 
 	private Model persist(Model model) {
@@ -23,7 +21,6 @@ public class Controller<T extends Model> {
 	public Model create(Model model){
 		return persist(model);
 	}
-
 
 	public Model update(Model model) {
 		em.merge(model);
@@ -41,23 +38,23 @@ public class Controller<T extends Model> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(String modelName) {
-		return (List<T>) em.createNamedQuery(String.format("%s.findAll", modelName), Model.class).getResultList();
+	public List<T> findAll(Class<T> clazz) {
+		return (List<T>) em.createNamedQuery(String.format("%s.findAll", clazz.getSimpleName()), Model.class).getResultList();
 	}
 
-	public Model findByName(String modelName, String name) {
-		String querry = String.format("%s.findByName", modelName);
+	public Model findByName(Class<T> clazz, String name) {
+		String querry = String.format("%s.findByName", clazz.getSimpleName());
 		return em.createNamedQuery(querry, Model.class).setParameter("name", name).getSingleResult();
 	}
 
-	public Model findByNumber(String modelName, Integer number) {
-		String querry = String.format("%s.findByNumber", modelName);
-		return em.createNamedQuery(querry, Model.class).setParameter("number", number).getSingleResult();
+	public Model findByName(String clazzName, String name) {
+		String querry = String.format("%s.findByName", clazzName);
+		return em.createNamedQuery(querry, Model.class).setParameter("name", name).getSingleResult();
 	}
 
-	public Model findByWinner(String modelName, Player player) {
-		String querry = String.format("%s.findByNumber", modelName);
-		return em.createNamedQuery(querry, Model.class).setParameter("winner", player).getSingleResult();
+	public Model findByNumber(Class<T> clazz, Integer number) {
+		String querry = String.format("%s.findByNumber", clazz.getSimpleName());
+		return em.createNamedQuery(querry, Model.class).setParameter("number", number).getSingleResult();
 	}
 
 	public Model findByPlaySession(PlaySession session) {

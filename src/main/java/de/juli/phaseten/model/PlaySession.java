@@ -12,12 +12,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @NamedQueries({
 	  @NamedQuery(name="PlaySession.findAll", query="SELECT model FROM PlaySession model"),
 	  @NamedQuery(name="PlaySession.findByDate", query="SELECT model FROM PlaySession model WHERE model.date = :date"),
 	  @NamedQuery(name="PlaySession.findByWinner", query="SELECT model FROM PlaySession model WHERE model.winner = :winner"),
 	})
+@JsonIgnoreProperties({ "playerGroup", "games"})
 public class PlaySession extends Model {
 	private Date date;
 	@OneToOne

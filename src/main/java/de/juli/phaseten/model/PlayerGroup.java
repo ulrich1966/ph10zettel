@@ -14,12 +14,17 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * The better name 'Group' causes trouble with Hibernate/Sql becaus of keywords 
+ * @author uli
+ *
+ */
 @Entity
 @NamedQueries({ 
 	@NamedQuery(name = "PlayerGroup.findAll", query = "SELECT model FROM PlayerGroup model"), 
 	@NamedQuery(name = "PlayerGroup.findByName", query = "SELECT model FROM PlayerGroup model WHERE model.name = :name")
 })
-@JsonIgnoreProperties({ "players" })
+@JsonIgnoreProperties({ "players", "sessions" })
 public class PlayerGroup extends Model {
 	@Column(unique = true, nullable = false)
 	private String name;
