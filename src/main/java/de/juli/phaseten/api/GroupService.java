@@ -2,6 +2,7 @@ package de.juli.phaseten.api;
 
 import java.util.List;
 
+import javax.persistence.RollbackException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,8 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import de.juli.phaseten.controller.Controller;
 import de.juli.phaseten.exeption.NoPermissionExeption;
@@ -64,11 +63,29 @@ public class GroupService extends RestService<PlayerGroup> {
 	}
 
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createGroup(JSONPObject request) {
-		Object value = request.getValue();
-		System.out.println(""+value);
-		return Response.status(Response.Status.OK).entity(value).build();
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/")
+	public Response postMessage(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+		PlayerGroup model = mapper.readValue(jsonRequest, PlayerGroup.class);
+		String jsonResponse = "";
+		try {
+			super.hasPermission(hash);
+			if (model.getId() == null) {
+				model = (PlayerGroup) conrtroller.create(model);
+			} else {
+				model = (PlayerGroup) conrtroller.update(model);
+			}
+			jsonResponse = mapper.writeValueAsString(model);
+		} catch (NoPermissionExeption e) {
+			return noPermissionResult();
+		} catch (RollbackException e) {
+			String msg = String.format("Spielergruppe [ %s ] konnte nicht erzeugt werden! Vielleicht gibt es diese Gruppe schon!?", model.getName());
+			return Response.status(Response.Status.NO_CONTENT).entity(msg).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+		}
+		return createResponse(jsonResponse);
 	}
 }

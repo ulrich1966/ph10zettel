@@ -99,7 +99,11 @@ abstract class RestService<T extends Model> {
 	}
 
 	protected Response nullResult() {
-		return Response.status(401).entity("no result").build();
+		return Response.status(415).entity("no result").build();
+	}
+
+	protected Response constraintViolationResult(String modelName) {
+		return Response.status(415).entity(String.format("Ein/e %s gleichen Namens existiert bereits!", modelName)).build();
 	}
 
 	public boolean checkPermission(String hash) {
