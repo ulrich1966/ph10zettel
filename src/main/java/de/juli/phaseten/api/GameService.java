@@ -40,7 +40,6 @@ public class GameService extends RestService<Game> {
 		return super.getValueById(hash, id, Game.class);
 	}
 
-	
 	/**
 	 * Spiele einer Spielrunde
 	 */
@@ -123,7 +122,6 @@ public class GameService extends RestService<Game> {
 		}
 		return createResponse(jsonResponse);
 	}
-	  
 	
 	@GET
 	@Path("/count")
