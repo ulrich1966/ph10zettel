@@ -1,9 +1,5 @@
 package de.juli.phaseten;
 
-import static org.junit.Assert.*;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,37 +14,27 @@ public class PostNewGroupTest {
 
 	@Test
 	public void test() throws Exception {
-		// final String POST_PARAMS = "{\"userId\": 101,\"id\": 101,\"title\":
-		// \"Test Title\",\"body\": \"Test Body\"}";
 		final String POST_PARAMS = getGroupAsJson();
 		System.out.println(POST_PARAMS);
 
 		URL obj = new URL("http://localhost:8080/ph10zettel/api/playergroup/");
-		HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
-		postConnection.setRequestMethod("POST");
-		postConnection.setRequestProperty("Content-Type", "application/json");
-		postConnection.setDoOutput(true);
-		OutputStream os = postConnection.getOutputStream();
+		HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
 		os.write(POST_PARAMS.getBytes());
 		os.flush();
 		os.close();
 
-		int responseCode = postConnection.getResponseCode();
+		int responseCode = connection.getResponseCode();
 		System.out.println("POST Response Code :  " + responseCode);
-		System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+		System.out.println("POST Response Message : " + connection.getResponseMessage());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		PlayerGroup group = mapper.readValue(connection.getInputStream(), PlayerGroup.class);
 
-		// success
-		BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-
-		// print result
-		System.out.println(response.toString());
+		System.out.println(group.toString());
 	}
 
 	private String getGroupAsJson() throws Exception {

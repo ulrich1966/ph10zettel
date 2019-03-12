@@ -23,8 +23,10 @@ public class Controller<T extends Model> {
 	}
 
 	public Model update(Model model) {
-		em.merge(model);
-		return model;
+		if(!em.contains(model)) {
+			em.merge(model);			
+		}
+		return persist(model);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -72,7 +74,7 @@ public class Controller<T extends Model> {
 			em.getTransaction().commit();
 			success = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getCause()+"\n"+e.getMessage());
 		}
 		return success;
 	}

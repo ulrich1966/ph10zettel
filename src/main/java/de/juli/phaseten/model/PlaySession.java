@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	})
 @JsonIgnoreProperties({ "playerGroup", "games"})
 public class PlaySession extends Model {
+	private static final long serialVersionUID = 1L;
 	private Date date;
 	@OneToOne
 	private Player winner;

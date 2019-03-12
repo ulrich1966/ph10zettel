@@ -26,9 +26,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 })
 @JsonIgnoreProperties({ "players", "sessions" })
 public class PlayerGroup extends Model {
+	private static final long serialVersionUID = 1L;
 	@Column(unique = true, nullable = false)
 	private String name;
-	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.LAZY, mappedBy="playerGroups")
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="playerGroups")
 	private List<Player> players;
 	@OneToMany(mappedBy = "playerGroup", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
 	private List<PlaySession> sessions;
@@ -86,7 +87,7 @@ public class PlayerGroup extends Model {
 
 	@Override
 	public String toString() {
-		return "PlayerGroup [name=" + name + ", players=" + players + ", sessions=" + sessions + "]";
+		return "PlayerGroup [name=" + name + ", players=" + players + ", sessions=" + sessions + ", getId()=" + getId() + "]";
 	}
 	
 }

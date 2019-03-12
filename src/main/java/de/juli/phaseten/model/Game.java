@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	})
 @JsonIgnoreProperties({ "playSession", "sheeds" })
 public class Game extends Model {
+	private static final long serialVersionUID = 1L;
 	private Integer currentNumber;
 	@OneToOne
 	private Player winner;

@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 	  @NamedQuery(name="GameModus.findByName", query="SELECT model FROM GameModus model WHERE model.name = :name")
 	})
 public class GameModus extends Model {
+	private static final long serialVersionUID = 1L;
 	@Column(nullable=false)
 	private String name; 
 	@OneToMany(mappedBy="gameModus", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -5,6 +5,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class Phase extends Model {
+	private static final long serialVersionUID = 1L;
 	@OneToOne
 	private PhaseItem phaseItem; 
 	private Integer score;

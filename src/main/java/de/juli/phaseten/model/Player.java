@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	})
 @JsonIgnoreProperties({ "playerGroups" })
 public class Player extends Model {
+	private static final long serialVersionUID = 1L;
 	@Column(unique = true, nullable = false)
 	private String name;
 	private String comment;

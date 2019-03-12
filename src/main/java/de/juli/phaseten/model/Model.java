@@ -1,5 +1,6 @@
 package de.juli.phaseten.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -12,9 +13,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class Model {
+public abstract class Model implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Version
 	private Long version;

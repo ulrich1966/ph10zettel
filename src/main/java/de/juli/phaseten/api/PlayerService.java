@@ -2,7 +2,10 @@ package de.juli.phaseten.api;
 
 import java.util.List;
 
+import javax.persistence.RollbackException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -61,11 +64,44 @@ public class PlayerService extends RestService<Player> {
 	}
 	
 
+	/**
+	 *  Anzahl der Spieler
+	 */
 	@GET
 	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCount(@QueryParam("hash") String hash) {
 		return super.getCount(hash, Player.class);
+	}
+	
+	/**
+	 * Neuen Spieler anlegen oder Aenderungen speichern
+	 */
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/")
+	public Response createGroup(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+		Player model = mapper.readValue(jsonRequest, Player.class);
+		String jsonResponse = "";
+		try {
+			super.hasPermission(hash);
+			if (model.getId() == null) {
+				model = (Player) conrtroller.create(model);
+			} else {
+				model = (Player) conrtroller.update(model);
+			}
+			jsonResponse = mapper.writeValueAsString(model);
+		} catch (NoPermissionExeption e) {
+			return noPermissionResult();
+		} catch (RollbackException e) {
+			String msg = String.format("Spielergruppe [ %s ] konnte nicht erzeugt werden! Vielleicht gibt es diese Gruppe schon!?", model.getName());
+			return Response.status(Response.Status.NO_CONTENT).entity(msg).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+		}
+		return createResponse(jsonResponse);
 	}
 
 }

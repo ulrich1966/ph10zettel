@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 	  @NamedQuery(name="PhaseItem.findByNumber", query="SELECT model FROM PhaseItem model WHERE model.number = :number")
 	})
 public class PhaseItem extends Model {
+	private static final long serialVersionUID = 1L;
 	private Integer number;
 	private String name;
 	@ManyToOne(cascade = CascadeType.ALL)

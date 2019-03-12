@@ -6,17 +6,16 @@ import java.util.List;
 import java.util.Random;
 
 import de.juli.phaseten.controller.Controller;
-import de.juli.phaseten.model.Game;
 import de.juli.phaseten.model.GameModus;
 import de.juli.phaseten.model.Model;
 import de.juli.phaseten.model.PhaseItem;
+import de.juli.phaseten.model.PlaySession;
 import de.juli.phaseten.model.Player;
 import de.juli.phaseten.model.PlayerGroup;
 import de.juli.phaseten.service.SessionService;
-import de.juli.phaseten.model.PlaySession;
 
 public class CreateTestData {
-	private static final String GROUP_1 = "Braking Bad";
+	private static final String GROUP_1 = "Breaking Bad";
 	private static final String GROUP_2 = "Musiker";
 	private static final String GROUP_3 = "Politiker";
 	private static final String GROUP_4 = "Double Sense";
@@ -37,7 +36,7 @@ public class CreateTestData {
 	private void createPlayerWithGrpup(List<PlayerGroup> models) {
 		models.forEach(m -> {
 			if(m.getName().contentEquals(GROUP_1)) {
-				m.addPlayer(new Player("Walter White", "Alisas Heisenberg", null, m));
+				m.addPlayer(new Player("Walter White", "Alias Heisenberg", null, m));
 				m.addPlayer(new Player("Jessy Pinkman", null, null, m));
 				m.addPlayer(new Player("Gustavo Frings", null, null, m));
 				m.addPlayer(new Player("Victor Salamanca", null, null, m));

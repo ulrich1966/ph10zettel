@@ -7,6 +7,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class Sheed extends Model {
+	private static final long serialVersionUID = 1L;
 	@OneToOne
  	private Phase phase01;
  	@OneToOne
