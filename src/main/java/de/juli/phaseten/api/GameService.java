@@ -3,7 +3,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -128,6 +130,39 @@ public class GameService extends RestService<Game> {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCount(@QueryParam("hash") String hash) {
 		return super.getCount(hash, Game.class);
+	}
+	
+	/**
+	 * Neues Spiel anlegen
+	 */
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/")
+	public Response createNewModel(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+		Game model = mapper.readValue(jsonRequest, Game.class);
+		String jsonResponse = "";
+		try {
+			super.hasPermission(hash);
+			Game mappedModel = checkExistence(model);
+			if (mappedModel == null) {
+				mappedModel = (Game) conrtroller.create(model);
+			}
+			jsonResponse = mapper.writeValueAsString(mappedModel);
+		} catch (NoPermissionExeption e) {
+			return noPermissionResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+		}
+		return createResponse(jsonResponse);
+	}
+	
+	private Game checkExistence(Game model) {
+		if(model.getId() != null) {
+			return model;
+		}		
+		return null;
 	}
 
 }

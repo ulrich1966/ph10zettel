@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import de.juli.phaseten.model.Game;
 import de.juli.phaseten.model.Model;
 import de.juli.phaseten.model.PlaySession;
+import de.juli.phaseten.model.Player;
 
 public class Controller<T extends Model> {
 	EntityManager em = MyEntittyManager.getInstance().getEm();
@@ -63,6 +64,10 @@ public class Controller<T extends Model> {
 		return em.createNamedQuery("Game.findByPlaySession", Game.class).setParameter("session", session).getResultList();
 	}
 
+	public PlaySession findByWinner(Player winner) {
+		return em.createNamedQuery("PlaySession.findByWinner", PlaySession.class).setParameter("winner", winner).getSingleResult();
+	}
+
 	public boolean delete(Model model) {
 		boolean success = false;
 		try {
@@ -86,4 +91,5 @@ public class Controller<T extends Model> {
 	public void setEm(EntityManager em) {
 		this.em = em;
 	}
+
 }

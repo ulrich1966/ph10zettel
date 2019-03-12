@@ -101,7 +101,7 @@ public class PlayerGroup extends Model {
 
 	@Override
 	public String toString() {
-		return "PlayerGroup [name=" + name + ", players=" + players + ", sessions=" + sessions + ", Id=" + getId() + "]";
+		return "PlayerGroup [name=" + name + ", players=" + "" + ", sessions=" + "" + ", Id=" + getId() + "]";
 	}
 	
 }

@@ -90,6 +90,6 @@ public class Player extends Model {
 
 	@Override
 	public String toString() {
-		return "Player [name=" + name + ", comment=" + comment + ", pic=" + pic + ", Id=" + getId() + "]";
+		return "Player [Id=" + getId() + "name=" + name + ", comment=" + comment + ", pic=" + pic + "]";
 	}
 }

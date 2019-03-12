@@ -2,6 +2,7 @@ package de.juli.phaseten.api;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -74,26 +75,22 @@ public class PlayerService extends RestService<Player> {
 	}
 	
 	/**
-	 * Neuen Spieler anlegen oder Aenderungen speichern
+	 * Neuen Spieler anlegen
 	 */
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/")
-	public Response createGroup(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+	public Response createNewModel(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
 		Player model = mapper.readValue(jsonRequest, Player.class);
 		String jsonResponse = "";
 		try {
 			super.hasPermission(hash);
-			boolean exist = checkExistence(model);
-			if (!exist) {
-				model = (Player) conrtroller.create(model);
-				jsonResponse = mapper.writeValueAsString(model);
-			} 
-			else {
-				//jsonResponse = String.format("Ein Spieler mit dem Namen [ %s ] existiert bereits!", model.getName());
-				return Response.status(Response.Status.CONFLICT).entity(model).build();
+			Player mappedModel = checkExistence(model);
+			if (mappedModel == null) {
+				mappedModel = (Player) conrtroller.create(model);
 			}
+			jsonResponse = mapper.writeValueAsString(mappedModel);
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();
 		} catch (Exception e) {
@@ -103,15 +100,16 @@ public class PlayerService extends RestService<Player> {
 		return createResponse(jsonResponse);
 	}
 
-	private boolean checkExistence(Player model) {
+	private Player checkExistence(Player model) {
 		if(model.getId() != null) {
-			return true;
+			return model;
+		}		
+		try {
+			model = (Player) super.conrtroller.findByName(Player.class, model.getName());
+		} catch (NoResultException e) {
+			return null;
 		}
-		model = (Player) super.conrtroller.findByName(Player.class, model.getName());
-		if(model != null) {
-			return true;
-		}
-		return false;
+		return model;
 	}
 
 }

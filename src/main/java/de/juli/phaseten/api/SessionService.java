@@ -3,7 +3,9 @@ package de.juli.phaseten.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -100,6 +102,39 @@ public class SessionService extends RestService<PlaySession> {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse). build();
 		}
 		return createResponse(jsonResponse);
+	}
+	
+	/**
+	 * Neue Session anlegen
+	 */
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/")
+	public Response createNewModel(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+		PlaySession model = mapper.readValue(jsonRequest, PlaySession.class);
+		String jsonResponse = "";
+		try {
+			super.hasPermission(hash);
+			PlaySession mappedModel = checkExistence(model);
+			if (mappedModel == null) {
+				mappedModel = (PlaySession) conrtroller.create(model);
+			}
+			jsonResponse = mapper.writeValueAsString(mappedModel);
+		} catch (NoPermissionExeption e) {
+			return noPermissionResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+		}
+		return createResponse(jsonResponse);
+	}
+
+	private PlaySession checkExistence(PlaySession model) {
+		if(model.getId() != null) {
+			return model;
+		}		
+		return null;
 	}
 
 }

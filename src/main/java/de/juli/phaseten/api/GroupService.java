@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -126,30 +127,24 @@ public class GroupService extends RestService<PlayerGroup> {
 	}
 
 	/**
-	 * Neue Gruppe anlegen oder Aenderungen speichern
+	 * Neue Gruppe anlegen
 	 */
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/")
-	public Response createGroup(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+	public Response createNewModel(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
 		PlayerGroup model = mapper.readValue(jsonRequest, PlayerGroup.class);
 		String jsonResponse = "";
 		try {
 			super.hasPermission(hash);
-			boolean exist = checkExistence(model);
-			if (!exist) {
-				model = (PlayerGroup) conrtroller.create(model);
-				jsonResponse = mapper.writeValueAsString(model);
-			} else {
-				jsonResponse = String.format("Eine Spielergruppe mit dem Namen [ %s ] existeirt bereits!", model.getName());
-				return Response.status(Response.Status.CONFLICT).entity(jsonResponse).build();
+			PlayerGroup mappedModel = checkExistence(model);
+			if (mappedModel == null) {
+				mappedModel = (PlayerGroup) conrtroller.create(model);
 			}
+			jsonResponse = mapper.writeValueAsString(mappedModel);
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();
-		} catch (RollbackException e) {
-			String msg = String.format("Spielergruppe [ %s ] konnte nicht erzeugt werden! Vielleicht gibt es diesen Gruppennamen schon!?", model.getName());
-			return Response.status(Response.Status.NO_CONTENT).entity(msg).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
@@ -196,14 +191,15 @@ public class GroupService extends RestService<PlayerGroup> {
 		return createResponse(jsonResponse);
 	}
 	
-	private boolean checkExistence(PlayerGroup model) {
+	private PlayerGroup checkExistence(PlayerGroup model) {
 		if(model.getId() != null) {
-			return true;
+			return model;
+		}		
+		try {
+			model = (PlayerGroup) super.conrtroller.findByName(PlayerGroup.class, model.getName());
+		} catch (NoResultException e) {
+			return null;
 		}
-		model = (PlayerGroup) super.conrtroller.findByName(PlayerGroup.class, model.getName());
-		if(model != null) {
-			return true;
-		}
-		return false;
+		return model;
 	}
 }

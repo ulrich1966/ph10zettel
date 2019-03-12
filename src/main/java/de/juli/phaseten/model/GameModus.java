@@ -55,6 +55,6 @@ public class GameModus extends Model {
 
 	@Override
 	public String toString() {
-		return "GameModi [name=" + name + ", items=" + phaseItems + "]";
+		return "GameModi [name=" + name + ", items=" + "" + "]";
 	}
 }

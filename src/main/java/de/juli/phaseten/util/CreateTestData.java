@@ -12,7 +12,6 @@ import de.juli.phaseten.model.PhaseItem;
 import de.juli.phaseten.model.PlaySession;
 import de.juli.phaseten.model.Player;
 import de.juli.phaseten.model.PlayerGroup;
-import de.juli.phaseten.service.SessionService;
 
 public class CreateTestData {
 	private static final String GROUP_1 = "Breaking Bad";

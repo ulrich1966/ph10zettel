@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.juli.phaseten.controller.Controller;
+import de.juli.phaseten.model.GameModus;
 import de.juli.phaseten.model.Player;
 import de.juli.phaseten.model.PlayerGroup;
 
@@ -29,8 +30,13 @@ public class RandomModel {
 		return ctrl.findAll(Player.class);
 	}
 	
+	public static GameModus fetchRandomGameModus() {
+		Controller<GameModus> ctrl = new Controller<>();
+		return (GameModus) getRandom(ctrl.findAll(GameModus.class));
+	}
+	
 	private static Object getRandom(List<?> models) {
-		int i = getRandomNumberInRange(0, models.size()-1);
+		int i = getRandomNumberInRange(0, models.size());
 		return models.get(i);
 	}
 

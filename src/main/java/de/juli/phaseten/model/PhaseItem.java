@@ -52,6 +52,13 @@ public class PhaseItem extends Model {
 	public void setGameModus(GameModus gameModus) {
 		this.gameModus = gameModus;
 	}
+
+	@Override
+	public String toString() {
+		return "PhaseItem [Id=" + getId() + "number=" + number + ", name=" + name + ", gameModus=" + "" + "]";
+	}
+	
+	
 	
 	
 }
