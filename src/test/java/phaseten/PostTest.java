@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.juli.phaseten.model.PlayerGroup;
 
-public class postTest {
+public class PostTest {
 
 	@Test
 	public void test() throws Exception {

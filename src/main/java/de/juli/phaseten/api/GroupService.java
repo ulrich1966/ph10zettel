@@ -66,7 +66,7 @@ public class GroupService extends RestService<PlayerGroup> {
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/")
-	public Response postMessage(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
+	public Response createGroup(@QueryParam("hash") String hash, String jsonRequest) throws Exception {
 		PlayerGroup model = mapper.readValue(jsonRequest, PlayerGroup.class);
 		String jsonResponse = "";
 		try {
@@ -82,6 +82,39 @@ public class GroupService extends RestService<PlayerGroup> {
 		} catch (RollbackException e) {
 			String msg = String.format("Spielergruppe [ %s ] konnte nicht erzeugt werden! Vielleicht gibt es diese Gruppe schon!?", model.getName());
 			return Response.status(Response.Status.NO_CONTENT).entity(msg).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+		}
+		return createResponse(jsonResponse);
+	}
+
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/{gid}/player/{pid}")
+	public Response addPlayerToGroup(@QueryParam("hash") String hash, @PathParam("gid") String gid, @PathParam("pid") String pid) throws Exception {
+		//PlayerGroup model = mapper.readValue(jsonRequest, PlayerGroup.class);
+		String jsonResponse = "";
+		try {
+			super.hasPermission(hash);
+			PlayerGroup group = findModel(gid, PlayerGroup.class);
+			if(group == null) {
+				String msg = String.format("Spielergruppe mit ID: [ %s ] nicht gefunden!", gid);
+				throw new IllegalArgumentException(msg);
+			}
+			Controller<Player> controller = new Controller<>();
+			Player player = controller.findById(stringToNumber(pid), Player.class);
+			if(player == null) {
+				String msg = String.format("Spieler mit ID: [ %s ] nicht gefunden!", gid);
+				throw new IllegalArgumentException(msg);
+			}
+			group.addPlayer(player);
+			jsonResponse = mapper.writeValueAsString(group);
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		} catch (NoPermissionExeption e) {
+			return noPermissionResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
