@@ -1,6 +1,5 @@
 package de.juli.phaseten.api;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,12 +137,14 @@ public class GroupService extends RestService<PlayerGroup> {
 		String jsonResponse = "";
 		try {
 			super.hasPermission(hash);
-			if (model.getId() == null) {
+			boolean exist = checkExistence(model);
+			if (!exist) {
 				model = (PlayerGroup) conrtroller.create(model);
+				jsonResponse = mapper.writeValueAsString(model);
 			} else {
-				model = (PlayerGroup) conrtroller.update(model);
+				jsonResponse = String.format("Eine Spielergruppe mit dem Namen [ %s ] existeirt bereits!", model.getName());
+				return Response.status(Response.Status.CONFLICT).entity(jsonResponse).build();
 			}
-			jsonResponse = mapper.writeValueAsString(model);
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();
 		} catch (RollbackException e) {
@@ -169,6 +170,10 @@ public class GroupService extends RestService<PlayerGroup> {
 			super.hasPermission(hash);
 			PlayerGroup model = super.findModel(id, PlayerGroup.class);
 			if(model != null) {
+				model.getPlayers().clear();
+//				for(PlaySession s : model.getSessions()) {
+//					model.removeSession(s);
+//				}
 				success = super.conrtroller.delete(model);
 			} else {
 				throw new IllegalArgumentException();
@@ -176,7 +181,7 @@ public class GroupService extends RestService<PlayerGroup> {
 			if(success) {
 				jsonResponse = mapper.writeValueAsString(String.format("Gruppe [ %s ] geloescht", model.getName()));				
 			} else {
-				jsonResponse = mapper.writeValueAsString(String.format("Gruppe [ %s ] konnte nicht geloescht werden", model.getName()));								
+				jsonResponse = mapper.writeValueAsString(String.format("Gruppe [ %s ] konnte nicht geloescht werden. Es sind noch Daten mit dieser Gruppe verbunden", model.getName()));								
 			}
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();
@@ -186,8 +191,19 @@ public class GroupService extends RestService<PlayerGroup> {
 			return Response.status(Response.Status.NO_CONTENT).entity(String.format("Kein Eintrag für [ %s ] mit der ID [ %s ]", Player.class.getName(), id)).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		return createResponse(jsonResponse);
+	}
+	
+	private boolean checkExistence(PlayerGroup model) {
+		if(model.getId() != null) {
+			return true;
+		}
+		model = (PlayerGroup) super.conrtroller.findByName(PlayerGroup.class, model.getName());
+		if(model != null) {
+			return true;
+		}
+		return false;
 	}
 }

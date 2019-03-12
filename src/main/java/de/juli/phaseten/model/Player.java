@@ -80,6 +80,13 @@ public class Player extends Model {
 			playerGroup.addPlayer(this);			
 		}
 	}
+	
+	public void removePlayerGroup(PlayerGroup playerGroup) {
+		if(this.playerGroups != null && this.playerGroups.contains(playerGroup)) {
+			this.playerGroups.remove(playerGroup);
+			playerGroup.removePlayer(this);
+		}		
+	}
 
 	@Override
 	public String toString() {

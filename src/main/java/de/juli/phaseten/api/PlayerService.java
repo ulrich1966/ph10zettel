@@ -2,7 +2,6 @@ package de.juli.phaseten.api;
 
 import java.util.List;
 
-import javax.persistence.RollbackException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -86,22 +85,33 @@ public class PlayerService extends RestService<Player> {
 		String jsonResponse = "";
 		try {
 			super.hasPermission(hash);
-			if (model.getId() == null) {
+			boolean exist = checkExistence(model);
+			if (!exist) {
 				model = (Player) conrtroller.create(model);
-			} else {
-				model = (Player) conrtroller.update(model);
+				jsonResponse = mapper.writeValueAsString(model);
+			} 
+			else {
+				//jsonResponse = String.format("Ein Spieler mit dem Namen [ %s ] existiert bereits!", model.getName());
+				return Response.status(Response.Status.CONFLICT).entity(model).build();
 			}
-			jsonResponse = mapper.writeValueAsString(model);
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();
-		} catch (RollbackException e) {
-			String msg = String.format("Spielergruppe [ %s ] konnte nicht erzeugt werden! Vielleicht gibt es diese Gruppe schon!?", model.getName());
-			return Response.status(Response.Status.NO_CONTENT).entity(msg).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
 		}
 		return createResponse(jsonResponse);
+	}
+
+	private boolean checkExistence(Player model) {
+		if(model.getId() != null) {
+			return true;
+		}
+		model = (Player) super.conrtroller.findByName(Player.class, model.getName());
+		if(model != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

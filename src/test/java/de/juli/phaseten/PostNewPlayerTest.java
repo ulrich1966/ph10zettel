@@ -8,39 +8,42 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.juli.phaseten.model.PlayerGroup;
+import de.juli.phaseten.model.Player;
 import de.juli.phaseten.util.ApiUrl;
 
-public class PostNewGroupTest {
+public class PostNewPlayerTest {
 
 	@Test
 	public void test() throws Exception {
 		final String POST_PARAMS = getModelAsJson();
 		System.out.println(POST_PARAMS);
 
-		URL obj = new URL(ApiUrl.GROUPS);
+		URL obj = new URL(ApiUrl.PLAYER);
 		HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setDoOutput(true);
+		
 		OutputStream os = connection.getOutputStream();
 		os.write(POST_PARAMS.getBytes());
 		os.flush();
 		os.close();
 
-		int responseCode = connection.getResponseCode();
-		System.out.println("POST Response Code :  " + responseCode);
-		System.out.println("POST Response Message : " + connection.getResponseMessage());
-		
-		ObjectMapper mapper = new ObjectMapper();
-		PlayerGroup group = mapper.readValue(connection.getInputStream(), PlayerGroup.class);
-
-		System.out.println(group.toString());
+		try {
+			int responseCode = connection.getResponseCode();
+			System.out.println("POST Response Code :  " + responseCode);
+			System.out.println("POST Response Message : " + connection.getResponseMessage());			
+			ObjectMapper mapper = new ObjectMapper();
+			Player model = mapper.readValue(connection.getInputStream(), Player.class);
+			System.out.println(""+model.toString());
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	private String getModelAsJson() throws Exception {
-		PlayerGroup group = new PlayerGroup("test");
-		String result = new ObjectMapper().writeValueAsString(group);
+		Player model = new Player("Weihnachtsmann", "Ist denn schon wieder Weihnachten?", null);
+		String result = new ObjectMapper().writeValueAsString(model);
 		return result;
 	}
 
