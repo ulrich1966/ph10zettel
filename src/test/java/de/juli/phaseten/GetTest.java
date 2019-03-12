@@ -1,4 +1,4 @@
-package phaseten;
+package de.juli.phaseten;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

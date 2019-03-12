@@ -1,4 +1,4 @@
-package phaseten;
+package de.juli.phaseten;
 
 import static org.junit.Assert.*;
 

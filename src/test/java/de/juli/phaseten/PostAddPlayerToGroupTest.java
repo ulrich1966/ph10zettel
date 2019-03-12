@@ -1,4 +1,6 @@
-package phaseten;
+package de.juli.phaseten;
+
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,12 +14,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.juli.phaseten.model.PlayerGroup;
 
-public class PostTest {
+public class PostAddPlayerToGroupTest {
 
 	@Test
 	public void test() throws Exception {
-		// final String POST_PARAMS = "{\"userId\": 101,\"id\": 101,\"title\":
-		// \"Test Title\",\"body\": \"Test Body\"}";
 		final String POST_PARAMS = getGroupAsJson();
 		System.out.println(POST_PARAMS);
 
