@@ -13,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.juli.phaseten.controller.Controller;
 import de.juli.phaseten.exeption.NoPermissionExeption;
 import de.juli.phaseten.model.Player;
 import de.juli.phaseten.model.PlayerGroup;
@@ -50,7 +51,8 @@ public class PlayerService extends RestService<Player> {
 		String jsonResponse = "";
 		try {
 			super.hasPermission(hash);
-			List<PlayerGroup> models = super.findModel(id, Player.class).getPlayerGroups();
+			Controller<PlayerGroup> cntr = new Controller<PlayerGroup>();
+			List<Player> models = cntr.findById(Long.valueOf(id), PlayerGroup.class).getPlayers();
 			jsonResponse = mapper.writeValueAsString(models);
 		} catch (NoPermissionExeption e) {
 			return noPermissionResult();	
